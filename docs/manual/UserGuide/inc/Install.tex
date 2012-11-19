@@ -1,0 +1,115 @@
+%%
+%% Copyright (C) 2008  Distributed Computing System (DCS) Group, Computer
+%% Science Department - University of Piemonte Orientale, Alessandria (Italy).
+%%
+%% This program is free software: you can redistribute it and/or modify
+%% it under the terms of the GNU Lesser General Public License as published
+%% by the Free Software Foundation, either version 3 of the License, or
+%% (at your option) any later version.
+%%
+%% This program is distributed in the hope that it will be useful,
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%% GNU Lesser General Public License for more details.
+%%
+%% You should have received a copy of the GNU Lesser General Public License
+%% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%%
+
+\section{Installazione} \label{sec:inst}
+
+Questa sezione descrive i passi necessari per installare l'applicazione \mgTheApp{}.
+
+\subsection{Requisiti di Sistema} \label{ssec:inst-sysreq}
+
+Per poter eseguire l'applicazione \mgTheApp{} \`e necessario che il proprio sistema disponga dei seguenti requisiti software:
+\begin{itemize}
+\item \emph{Java Runtime Environment} (\emph{JRE}) versione $1.6$, scaricabile, ad esempio, dal sito della \emph{Sun} (\href{http://java.sun.com}{http://java.sun.com}).
+\item Componente \emph{mygrid} del middleware \emph{OurGrid}, versione $3.3.1$, scaricabile dal sito di \emph{OurGrid} (\href{http://www.ourgrid.org}{http://www.ourgrid.org}) e disponibile anche sul sito di \emph{ShareGrid} (\href{http://dcs.di.unipmn.it}{http://dcs.di.unipmn.it}).
+\item Sistema operativo Unix-like, come, ad esempio, Linux (per soddisfare i requisiti del componente \emph{mygrid} di \emph{OurGrid}).
+\item Programma in grado di scompattare file in formato \emph{ZIP}.
+\end{itemize}
+
+Per verificare che la versione del JRE installato nel proprio sistema sia quella corretta, eseguire, da un prompt dei comandi, il seguente comando:
+\begin{mgCodeBox}
+java -version
+\end{mgCodeBox}
+Dovrebbe apparire un messaggio mostrante la versione del JRE.
+Per esempio, utilizzando il \emph{Sun JRE $1.6$ Update $2$}, il messaggio visualizzato, dopo l'esecuzione del comando precedentemente mostrato, dovrebbe essere simile al seguente:
+\begin{mgCodeBox}
+java version ``1.6.0\_02''\newline
+Java(TM) SE Runtime Environment (build 1.6.0\_02-b05)\newline
+Java HotSpot(TM) Client VM (build 1.6.0\_02-b05, mixed mode, sharing)
+\end{mgCodeBox}
+
+Per controllare che la versione del componente \emph{mygrid} del middleware \emph{OurGrid} sia quella richiesta, eseguire, da un prompt dei comandi, le seguenti istruzioni:
+\begin{mgCodeBox}
+cd /path/to/mygrid/installation\newline
+./bin/mygrid version
+\end{mgCodeBox}
+Per esempio, nel caso in cui \emph{mygrid} sia stato scaricato dal sito di \emph{Sharegrid}, i comandi da eseguire sarebbero:
+\begin{mgCodeBox}
+cd shareGrid/clientSG\newline
+./bin/mygrid version
+\end{mgCodeBox}
+L'output del comando dovrebbe essere simile al seguente:
+\begin{mgCodeBox}
+OurGrid 3.3.1 - MyGrid\newline
+\newline
+For MyGrid updates and additional information, see the\newline
+OurGrid Project home page at http://www.ourgrid.org/ 
+\end{mgCodeBox}
+
+\`E inoltre indispensabile avere una connessione Internet per poter accedere all'infrastruttura Grid di \emph{ShareGrid}.
+
+\subsection{Installazione} \label{sec:inst-inst}
+
+Se i requisiti di sistema (\S \ref{ssec:inst-sysreq}) sono soddisfatti \`e possibile procedere all'installazione di \mgTheApp{}.
+Al fine di semplificare la descrizione della procedura di installazione, nel seguito si effettueranno le seguenti assunzioni:
+\begin{itemize}
+\item L'utente ha installato il componente \emph{mygrid} attraverso il file e le istruzioni pubblicate sul sito di \emph{ShareGrid}; ne segue, che sul disco dell'utente \`e presente la cartella \emph{shareGrid}, creata durante il processo di installazione di \emph{mygrid}.
+\item Il programma utilizzato dall'utente per scompattare i file in formato ZIP \`e \emph{unzip}.
+\end{itemize}
+
+Di seguito viene presentata la procedura di installazione di \mgTheApp{}.
+\begin{enumerate}
+\item Scaricare dal sito di \emph{ShareGrid} (\href{http://dcs.di.unipmn.it}{http://dcs.di.unipmn.it}) il file \mgTheAppFile{.zip}.
+\item Scompattare il file all'interno della cartella \emph{shareGrid} creata durante l'installazione del componente \emph{mygrid}:
+\begin{mgCodeBox}
+cd shareGrid \newline
+unzip \mgTheAppFile{.zip}
+\end{mgCodeBox}
+Se non si sono verificati errori, dovrebbe essere stata creata la cartella \mgTheApp{}.
+\item Spostarsi nella directory \mgTheApp{}
+\begin{mgCodeBox}
+cd \mgTheApp{}
+\end{mgCodeBox}
+\item Eseguire lo script di installazione \emph{install.sh}
+\begin{mgCodeBox}
+./install.sh
+\end{mgCodeBox}
+\begin{enumerate}
+\item Se l'esecuzione dello script termina con il messaggio:
+\begin{mgCodeBox}
+The path '/full/path/to/shareGrid/clientSG' seems to work! \newline
+Installation succeded! \newline
+Bye!!
+\end{mgCodeBox}
+allora \`e possibile proseguire con l'installazione.
+\item Altrimenti, nel caso in cui venga mostrato il messaggio:
+\begin{mgCodeBox}
+!! WARNING !! \newline
+MGROOT\_GUESS variable is set to a non existent path (\dots)! \newline
+Please, set it to the MyGrid installation path. \newline
+Installation failed. Sorry! \newline
+Bye!!
+\end{mgCodeBox}
+editare il file \emph{install.sh} e impostare la variabile di ambiente \texttt{MGROOT\_GUESS} in modo che contenga il percorso completo della cartella in cui \`e stato installato il componente \emph{mygrid}. Per le assunzioni fatte in precedenza, tale percorso dovrebbe essere dato da \emph{/full/path/to/shareGrid/clientSG}: 
+\begin{mgCodeBox}
+MGROOT\_GUESS=/full/path/to/shareGrid/clientSG
+\end{mgCodeBox}
+Ripetere quindi il comando mostrato all'inizio di questo passo.
+\end{enumerate}
+\item Se l'esecuzione di \emph{install.sh} termina con successo, dovrebbe essere presente nella stessa cartella il nuovo file \mgTheAppFile{.sh}.
+\item A questo punto, l'installazione di \mgTheApp{} \`e completata.
+\end{enumerate}

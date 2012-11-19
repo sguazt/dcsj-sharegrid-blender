@@ -1,0 +1,341 @@
+<?xml version="1.0"?>
+
+<!--
+ * Copyright (C) 2008  Distributed Computing System (DCS) Group, Computer
+ * Science Department - University of Piemonte Orientale, Alessandria (Italy).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+-->
+
+<project name="DCS ShareGrid Blender" default="compile" basedir=".">
+	<description>
+	A job submitter for executing Blender in the ShareGrid systems.
+	</description>
+
+	<property file="build.properties"/>
+	<property file="${user.home}/build.properties"/>
+
+	<!--
+		=== Compilation Classpath ===
+	-->
+	<path id="compile.classpath">
+		<pathelement location="${lib.path}"/>
+		<fileset dir="${lib.path}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+	<!--
+		=== Jar Classpath ===
+	-->
+<!--
+	<property name="jar.classpath" value=". lib/dcs-jcommons-1.6.25.jar lib/dcs-jgrid-core-1.0.14.jar lib/dcs-jgrid-ourgrid-1.0.9.jar lib/javacc.jar lib/log4j.jar lib/ourgrid.jar"/>
+-->
+
+	<!--
+		=== "all" Target ===
+	-->
+	<target	name="all"
+		depends="clean,build"
+		description="Clean build and dist directories, then rebuild"/>
+
+	<!--
+		=== "clean" Target ===
+	-->
+	<target	name="clean"
+		description="Delete old build and dist directories">
+		<delete dir="${build.home}"/>
+		<delete dir="${dist.home}"/>
+		<delete dir="${test.build.path}"/>
+		<delete dir="${test.out.path}"/>
+	</target>
+
+	<!--
+		=== "dist" Target ===
+	-->
+	<target	name="dist"
+		depends="build,javadoc"
+		description="Create binary distribution">
+
+		<!-- Copy documentation subdirectories -->
+		<mkdir dir="${dist.home}/docs"/>
+		<copy todir="${dist.home}/docs">
+			<fileset dir="${docs.home}"/>
+		</copy>
+
+		<!-- Create application JAR file -->
+		<jar	jarfile="${jar.file}"
+			basedir="${build.home}/classes">
+
+			<!-- Copy additional files to ${dist.home} as necessary -->
+
+			<metainf dir="${conf.home}" excludes=".*"/>
+
+			<manifest>
+<!--
+				<attribute name="Class-Path" value="${classpath.jar}"/>
+-->
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Main-Class" value="it.unipmn.di.dcs.sharegrid.submitter.app.render.blender.ui.ConsoleAppUI"/>
+				<attribute name="Class-Path" value=". lib/dcs-jcommons-1.6.25.jar lib/dcs-jgrid-core-1.0.14.jar lib/dcs-jgrid-ourgrid-1.0.9.jar lib/javacc.jar lib/log4j.jar lib/ourgrid.jar"/>
+<!--
+				<section name="it.unipmn.di.dcs.common">
+					<attribute name="Specification-Title" value="${app.name}"/>
+					<attribute name="Specification-Version" value="${app.version}"/>
+					<attribute name="Specification-Vendor" value="Distributed Computing System (DCS) Group"/>
+					<attribute name="Implementation-Title" value="${app.name}"/>
+					<attribute name="Implementation-Version" value="${app.version} ${TODAY}"/> 
+					<attribute name="Implementation-Vendor" value="Distributed Computing System (DCS) Group"/>
+				</section>
+-->
+
+			</manifest>
+		</jar>
+
+	</target>
+
+	<target name="dist.bundle" depends="dist">
+<!--
+		<copy todir="${dist.home}/tmp">
+			<fileset dir="${basedir}">
+				<include name="${jar.file}"/>
+				<include name="${install.file}"/>
+				<include name="${lib.path}"/>
+				<include name="${docs.home}/manual/UserGuide.pdf"/>
+			</fileset>
+		</copy>
+-->
+<!--
+		<zip destfile="${zip.file}" basedir="${basedir}">
+-->
+		<zip destfile="${zip.file}" level="9">
+			<zipfileset file="${jar.file}" prefix="${zip.prefix}"/>
+			<zipfileset file="${install.file}" prefix="${zip.prefix}" filemode="755"/>
+			<zipfileset file="${img2mov.file}" prefix="${zip.prefix}" filemode="755"/>
+			<zipfileset file="${mov2mov.file}" prefix="${zip.prefix}" filemode="755"/>
+			<zipfileset dir="${lib.path}" prefix="${zip.prefix}/lib"/>
+			<zipfileset dir="${xmpls.path}" prefix="${zip.prefix}/examples"/>
+<!--
+			<zipfileset file="${docs.home}/manual/AdminGuide/AdminGuide.pdf" prefix="${zip.prefix}/docs"/>
+-->
+			<zipfileset file="${docs.home}/manual/UserGuide/UserGuide.pdf" prefix="${zip.prefix}/docs"/>
+<!--
+			<zipfileset dir="${basedir}">
+				<include name="${jar.file}"/>
+				<include name="${install.file}"/>
+				<include name="${lib.path}/**"/>
+				<include name="${docs.home}/manual/AdminGuide/AdminGuide.pdf"/>
+				<include name="${docs.home}/manual/UserGuide/UserGuide.pdf"/>
+			</zipfileset>
+-->
+		</zip>
+	</target>
+
+	<!--
+		=== "build" Target ===
+	-->
+	<target	name="build"
+		depends="post-compile"
+		description="Build from Java sources"/>
+
+	<!--
+		=== "post-compile" Target ===
+	-->
+	<target name="post-compile"
+		depends="compile"
+		description="Operations to be done just after the compilation phase"/>
+
+	<!--
+		=== "compile" Target ===
+	-->
+	<target	name="compile"
+		depends="pre-compile"
+		description="Compile Java sources">
+
+		<!-- Compile Java classes as necessary -->
+		<javac	srcdir="${src.home}"
+			destdir="${build.home}/classes"
+			debug="${compile.debug}"
+			deprecation="${compile.deprecation}"
+			optimize="${compile.optimize}">
+
+			<classpath refid="compile.classpath"/>
+			<compilerarg value="-Xlint:unchecked"/>
+<!--
+			<compilerarg value="-proc:none"/>
+-->
+<!--
+			<include name="**"/>
+-->
+			<exclude name="**/test/**"/>
+		</javac>
+
+		<!-- Copy application resources -->
+<!--
+		<copy  todir="${build.home}/classes">
+			<fileset dir="${src.home}" excludes="**/*.java"/>
+		</copy>
+-->
+	</target>
+
+	<!--
+		=== "javadoc" Target ===
+	-->
+	<target	name="javadoc"
+		depends="compile"
+		description="Create Javadoc API documentation">
+
+		<mkdir dir="${dist.home}/docs/api"/>
+		<javadoc	sourcepath="${src.home}"
+				destdir="${dist.home}/docs/api"
+				packagenames="*">
+
+				<classpath refid="compile.classpath"/>
+
+				<doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${lib.path}/UmlGraph-5.6.jar">
+					<param name="-inferrel"/>
+					<param name="-inferdep"/>
+					<param name="-hide" value="java.*"/>
+					<param name="-collpackages" value="java.util.*"/>
+					<param name="-qualify"/>
+					<param name="-postfixpackage"/>
+					<param name="-nodefontsize" value="9"/>
+					<param name="-nodefontpackagesize" value="7"/>
+					<param name="-link" value="http://java.sun.com/javase/6/docs/guide/javadoc/doclet/spec"/>
+					<param name="-link" value="http://java.sun.com/javase/6/docs/api"/>
+				</doclet>
+		</javadoc>
+
+	</target>
+
+	<!--
+		=== "pre-compile" Target ===
+	-->
+	<target	name="pre-compile"
+		description="Operations to be done just before the compilation phase">
+		<!-- Create build directories as needed -->
+		<mkdir dir="${build.home}"/>
+		<mkdir dir="${build.home}/classes"/>
+
+		<!-- Copy static files from external dependencies as needed -->
+		<!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
+
+		<!-- Set the correct values for version, copyright, ... -->
+		<echo file="${src.home}/it/unipmn/di/dcs/sharegrid/submitter/Version.java">
+/* Automatically generated file */
+package it.unipmn.dcs.di.sharegrid.submitter;
+public class Version
+{
+	public static final String VERSION = "${app.version}";
+}
+		</echo>
+	</target>
+
+	<!--
+		=== Test Classpath ===
+	-->
+	<path id="test.classpath">
+		<pathelement location="${build.home}/classes"/>
+
+		<pathelement location="${test.build.path}/classes"/>
+
+		<pathelement location="${lib.path}"/>
+		<fileset dir="${lib.path}">
+			<include name="**/*.jar"/>
+		</fileset>
+
+<!--
+		<pathelement location="${conf.home}"/>
+		<fileset dir="${conf.home}">
+			<exclude name=".*"/>
+		</fileset>
+-->
+	</path>
+
+	<!--
+		=== "test" Target ===
+	-->
+	<target name="test"
+		depends="test.compile"
+		description="Run the test suite">
+
+		<junit	fork="yes"
+			haltonfailure="yes">
+
+			<formatter	type="xml"
+					usefile="true"/>
+			<classpath refid="test.classpath"/>
+
+			<batchtest	fork="yes"
+					todir="${test.out.path}">
+				<fileset dir="${test.src.path}">
+					<include name="test/unit/**/*.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+
+<!--
+		<javac fork="yes" executable="apt" srcdir="${src}" destdir="${build}">
+			<classpath>
+				<pathelement path="tutoriel-annotations.jar"/>
+			</classpath>
+			<compilerarg value="-Arelease"/>
+		</javac>
+-->
+	</target>
+
+	<!--
+		=== "test.compile" Target ===
+	-->
+	<target	name="test.compile"
+		depends="compile,test.pre-compile"
+		description="Compile Java test suite sources">
+
+		<!-- Compile Java classes as necessary -->
+		<javac	srcdir="${test.src.path}"
+			destdir="${test.build.path}/classes"
+			debug="${compile.debug}"
+			deprecation="${compile.deprecation}"
+			optimize="${compile.optimize}">
+
+			<classpath refid="test.classpath"/>
+			<compilerarg value="-Xlint:unchecked"/>
+<!--
+			<compilerarg value="-XprintProcessorInfo"/>
+			<compilerarg value="-XprintRounds"/>
+			<compilerarg path="-processorpath test/build/classes"/>
+-->
+		</javac>
+	</target>
+
+	<!--
+		=== "test.pre-compile" Target ===
+	-->
+	<target name="test.pre-compile">
+		<!-- Create build directories as needed -->
+		<mkdir dir="${test.build.path}"/>
+		<mkdir dir="${test.build.path}/classes"/>
+		<mkdir dir="${test.out.path}"/>
+
+		<!-- Copy static files from external dependencies as needed -->
+		<!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
+		<mkdir dir="${test.build.path}/classes/META-INF"/>
+		<copy todir="${test.build.path}/classes/META-INF">
+			<fileset dir="${conf.home}">
+				<exclude name=".*"/>
+			</fileset>
+		</copy>
+	</target>
+
+</project>

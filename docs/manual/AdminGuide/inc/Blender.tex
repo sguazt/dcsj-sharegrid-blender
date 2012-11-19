@@ -1,0 +1,365 @@
+%%
+%% Copyright (C) 2008  Distributed Computing System (DCS) Group, Computer
+%% Science Department - University of Piemonte Orientale, Alessandria (Italy).
+%%
+%% This program is free software: you can redistribute it and/or modify
+%% it under the terms of the GNU Lesser General Public License as published
+%% by the Free Software Foundation, either version 3 of the License, or
+%% (at your option) any later version.
+%%
+%% This program is distributed in the hope that it will be useful,
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%% GNU Lesser General Public License for more details.
+%%
+%% You should have received a copy of the GNU Lesser General Public License
+%% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%%
+
+\section{Creare una versione statica di Blender} \label{sec:blender}
+
+\subsection{Requisiti Hardware}
+
+\begin{itemize}
+\item RAM: 512MB (consigliato 1GB)
+\item Spazio libero su disco: 3 GB
+\item \dots (da completare)
+\end{itemize}
+
+\subsection{Requisiti Software}
+
+\begin{itemize}
+%\item libjpeg
+%\item OpenGL (libGL, libGLU)
+\item gcc >= 4.1
+\item make
+\item autoconf
+\item \dots (da completare con le dipendenze dei vari pkg da compilare)
+\end{itemize}
+
+\subsection{Passi di Compilazione}
+
+\begin{enumerate}
+\item Creazione layout di directory
+\begin{enumerate}
+\item mkdir -p libs
+\item mkdir -p subsys/bin
+\item mkdir -p subsys/include
+\item mkdir -p subsys/lib
+\item mkdir -p subsys/lib64
+\item mkdir -p subsys/man/man1
+\end{enumerate}
+%\item export CC="linux32 gcc"
+%\item export CXX="linux32 g++"
+%\item export LD="linux32 ld"
+%\item export CFLAGS="\$CFLAGS -m32"
+%\item export CXXFLAGS="\$CXXFLAGS -m32"
+%\item export LDFLAGS="\$LDFLAGS -m32"
+\item export ACLOCAL=``aclocal -I '\$PWD/subsys/share/aclocal\text{'}''
+\item export CFLAGS=``\$CFLAGS -I\$PWD/subsys/include -I\$PWD/subsys/include/X11 -L\$PWD/subsys/lib64 -L\$PWD/subsys/lib''
+\item export CXXFLAGS=``\$CXXFLAGS -I\$PWD/subsys/include -I\$PWD/subsys/include/X11 -L\$PWD/subsys/lib64 -L\$PWD/subsys/lib''
+\item export LDFLAGS=``\$LDFLAGS -L\$PWD/subsys/lib64 -L\$PWD/subsys/lib''
+\item export LD\_LIBRARY\_PATH=``\$PWD/subsys/lib64:\$PWD/subsys/lib:\$LD\_LIBRARY\_PATH''
+\item export PATH=``\$PWD/subsys/bin:\$PATH''
+\item export PKG\_CONFIG\_PATH=``\$PWD/subsys/lib64/pkgconfig:\$PWD/subsys/lib/pkgconfig:\$PKG\_CONFIG\_PATH:/usr/lib64/pkgconfig:/usr/lib/pkgconfig''
+\item Compilazione di \emph{runtime C/GCC} {\small\textcolor{red}{TODO}}
+%\item Compilazione di \emph{libdl} {\small\textcolor{red}{TODO}}
+%\item Compilazione di \emph{libpthread} {\small\textcolor{red}{TODO}}
+\item Compilazione di \emph{X} \S\ref{sssec:blender-x} {\small\textcolor{red}{TODO}}
+\item Compilazione di \emph{libdrm} \S\ref{sssec:blender-drm}
+\item Compilazione di \emph{OpenGL} \S\ref{sssec:blender-opengl}
+\item Compilazione di \emph{SDL} \S\ref{sssec:blender-sdl}
+\item Compilazione di \emph{libjpeg} \S\ref{sssec:blender-jpeg}
+\item Compilazione di \emph{libpng} \S\ref{sssec:blender-png}
+\item Compilazione di \emph{Python} \S\ref{sssec:blender-python}
+\item Compilazione di \emph{Freetype} {\small\textcolor{red}{TODO} (componente opzionale)}
+\item Compilazione di \emph{gettext} {\small\textcolor{red}{TODO} (componente opzionale)}
+\item Compilazione di \emph{blender} \S\ref{sssec:blender-blender} {\small\textcolor{yellow}{FIXME} (ancora errori)}
+\end{enumerate}
+
+\subsubsection{Compilazione statica di \emph{X}} \label{sssec:blender-x}
+
+\begin{enumerate}
+\item Scaricare, dal sito \href{http://xorg.freedesktop.org/}{http://xorg.freedesktop.org/}, i file:
+\begin{itemize}
+\item \texttt{util-macros-1.1.5.tar.bz2}
+\item \texttt{libX11-1.1.3.tar.bz2}
+\item \texttt{libXau-1.0.3.tar.bz2}
+\item \texttt{libXdmcp-1.0.2.tar.bz2}
+\item \texttt{libXi-1.1.3.tar.bz2}
+\item \texttt{libXmu-1.0.3.tar.bz2}
+\item \texttt{libXxf86vm-1.0.1.tar.bz2}
+\item \texttt{inputproto-1.4.2.1.tar.bz2}
+\item \texttt{kbproto-1.0.3.tar.bz2}
+\item \texttt{xextproto-7.0.2.tar.bz2}
+\item \texttt{xproto-7.0.10.tar.bz2}
+\item \texttt{xtrans-1.0.4.tar.bz2}
+\end{itemize}
+\item Scaricare, dal sito \href{http://xcb.freedesktop.org/}{http://xcb.freedesktop.org/}, i file:
+\begin{itemize}
+\item \texttt{libpthread-stubs-0.1.tar.bz2}
+\item \texttt{xcb-proto.tar.bz2}
+\item \texttt{libxcb-1.0.tar.bz2}
+\end{itemize}
+\item cd libs
+\item Compilazione di \emph{util-macros}
+\begin{enumerate}
+\item tar jxvf ../util-macros-1.1.5.tar.bz2
+\item cd util-macros-1.1.5
+\item ./configure --prefix=``\$PWD/../../subsys''
+\item make
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libXau}
+\begin{enumerate}
+\item tar jxvf ../libXau-1.0.3.tar.bz2
+\item cd libXau-1.0.3
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make check
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{xproto}
+\begin{enumerate}
+\item tar jxvf ../xproto-7.0.10.tar.bz2
+\item cd xproto-7.0.10
+\item ./configure --prefix=``\$PWD/../../subsys''
+\item make
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libXdmcp}
+\begin{enumerate}
+\item tar jxvf ../libXdmcp-1.0.2.tar.bz2
+\item cd libXdmcp-1.0.2
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libpthread-stubs}
+\begin{enumerate}
+\item tar jxvf ../libpthread-stubs-0.1.tar.bz2
+\item cd libpthread-stubs-0.1
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{xcb-proto}
+\begin{enumerate}
+\item tar jxvf ../xcb-proto-1.0.tar.bz2
+\item cd xcb-proto-1.0
+\item ./configure --prefix=``\$PWD/../../subsys''
+\item make
+\item make check
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libxcb}
+\begin{enumerate}
+\item tar jxvf ../libxcb-1.0.tar.bz2
+\item cd libxcb-1.0
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make check
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{xextproto}
+\begin{enumerate}
+\item tar jxvf ../xextproto-7.0.2.tar.bz2
+\item cd xextproto-7.0.2
+\item ./configure --prefix=``\$PWD/../../subsys''
+\item make
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{kbproto}
+\begin{enumerate}
+\item tar jxvf ../kbproto-1.0.3.tar.bz2
+\item cd kbproto-1.0.3
+\item ./configure --prefix=``\$PWD/../../subsys''
+\item make
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{inputproto}
+\begin{enumerate}
+\item tar jxvf ../inputproto-1.4.2.1.tar.bz2
+\item cd inputproto-1.4.2.1
+\item ./configure --prefix=``\$PWD/../../subsys''
+\item make
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{xtrans}
+\begin{enumerate}
+\item tar jxvf xtrans-1.0.4.tar.bz2 
+\item cd xtrans-1.0.4
+\item ./configure --prefix=``\$PWD/../../subsys''
+\item make
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libX11}
+\begin{enumerate}
+\item tar jxvf ../libX11-1.1.3.tar.bz2
+\item cd libX11-1.1.3
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make check
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libXext}
+\begin{enumerate}
+\item tar jxvf ../libXext-1.0.2.tar.bz2
+\item cd libXext-1.0.2
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make check
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libXi}
+\begin{enumerate}
+\item tar jxvf ../libXi-1.1.3.tar.bz2
+\item cd libXi-1.1.3
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make check
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libXv}
+\begin{enumerate}
+\item tar jxvf ../libXv-1.0.3.tar.bz2
+\item cd libXv-1.0.3
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make check
+\item make install
+\item cd ..
+\end{enumerate}
+\item Compilazione di \emph{libXxf86vm}
+\begin{enumerate}
+\item tar jxvf ../libXxf86vm-1.0.1.tar.bz2
+\item cd libXxf86vm-1.0.1
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared
+\item make
+\item make check
+\item make install
+\item cd ..
+\end{enumerate}
+\end{enumerate}
+
+\subsubsection{Compilazione statica di \emph{libdrm}} \label{sssec:blender-drm}
+
+\begin{enumerate}
+\item Scaricare il file \texttt{libdrm-2.3.0.tar.gz} dal sito \href{http://dri.freedesktop.org}{http://dri.freedesktop.org}.
+\item cd libs
+\item tar jxvf ../libdrm-2.3.0.tar.gz
+\item cd libdrm-2.3.0
+\item ./configure --enable-static --disable-shared --prefix=``\$PWD/../../subsys''
+\item make
+\item make check
+\item make install
+\end{enumerate}
+
+\subsubsection{Compilazione statica di \emph{OpenGL}} \label{sssec:blender-opengl}
+
+\begin{enumerate}
+\item Scaricare il file \texttt{MesaLib-7.0.1.tar.bz2} dal sito \href{http://www.mesa3d.org}{http://www.mesa3d.org}.
+\item cd libs
+\item tar jxvf ../MesaLib-7.0.1.tar.bz2
+\item cd Mesa-7.0.1
+\item cp configs/default configs/default.orig
+\item cp ../../conf/Mesa/configs/default configs/default
+\item make realclean
+\item make linux-static
+\item make install
+%\item cd ..
+%\item tar jxvf ../MesaDemos-7.0.1.tar.bz2
+%\item cd Mesa-7.0.1
+\end{enumerate}
+
+\subsubsection{Compilazione statica di \emph{SDL}} \label{sssec:blender-sdl}
+
+\begin{enumerate}
+\item Scaricare il file \texttt{SDL-1.2.12.tar.gz} dal sito \href{http://www.libsdl.org}{http://www.libsdl.org}.
+\item cd libs
+\item tar jxvf ../SDL-1.2.12.tar.gz
+\item cd SDL-1.2.12
+\item ./configure --prefix=``\$PWD/../../subsys'' --enable-static --disable-shared --disable-audio --disable-x11-shared
+\item make
+\item make install
+\end{enumerate}
+
+\subsubsection{Compilazione statica di \emph{libjpeg}} \label{sssec:blender-jpeg}
+
+\begin{enumerate}
+\item Scaricare il file \texttt{jpegsrc.v6b.tar.gz} dal sito \href{http://www.ijg.org}{http://www.ijg.org}.
+\item cd libs
+\item tar zxvf ../jpegsrc.v6b.tar.gz
+\item cd jpeg-6b
+\item configure --enable-static --prefix=``\$PWD/../../subsys''
+\newline
+{\small
+(su architetture x86\_64: CFLAGS=``\$CFLAGS -m64'' linux32 configure --enable-static --prefix=``\$PWD/../../subsys'')
+}
+\item make
+\item make test
+\item make install
+\item make install-lib
+\end{enumerate}
+
+\subsubsection{Compilazione statica di \emph{libpng}} \label{sssec:blender-png}
+
+\begin{enumerate}
+\item Scaricare il file \texttt{libpng-1.2.22.tar.bz2} dal sito \href{http://www.libpng.org/pub/png/libpng.html}{http://www.libpng.org/pub/png/}.
+\item cd libs
+\item tar jxvf ../libpng-1.2.22.tar.bz2
+\item cd libpng-1.2.22
+\item ./configure --enable-static --disable-shared --prefix=``\$PWD/../../subsys''
+\item make
+\item make test
+\item make install
+\end{enumerate}
+
+\subsubsection{Compilazione statica di \emph{Python}} \label{sssec:blender-python}
+
+\begin{enumerate}
+\item Scaricare i file \texttt{Python-2.5.1.tar.bz2} dal sito \href{http://www.python.org}{http://www.python.org}.
+\item cd libs
+\item tar jxvf ../Python-2.5.1.tar.bz2
+\item cd Python-2.5.1
+\item ./configure --enable-static --disable-shared --prefix=``\$PWD/../../subsys''
+\item make
+\item make test
+\item make install
+\item cp libpython2.5.a ../../subsys/lib/.
+\newline
+{\small
+(Necessario perche' il comando ``make install'' copia la libreria nel path ``../../subsys/lib/config'')
+}
+\end{enumerate}
+
+\subsubsection{Compilazione statica di \emph{Blender}} \label{sssec:blender-blender}
+
+\begin{enumerate}
+\item tar zxvf blender-2.45.tar.gz
+\item cd blender-2.45
+\item cp config/linux2-config.py config/linux2-config.py.orig
+\item > config/linux2-config.py
+\item cp ../conf/Blender/user-config.py .
+\item Inclusione statica di \emph{libgcc} ??? (-static-libgcc)
+\item scons -c
+\item scons
+\newline
+{\small
+(Debug version: ``scons BF\_QUIET=0 >scons.out 2>\&1'')
+}
+\end{enumerate}

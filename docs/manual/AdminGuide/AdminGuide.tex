@@ -1,0 +1,159 @@
+%%
+%% Copyright (C) 2008  Distributed Computing System (DCS) Group, Computer
+%% Science Department - University of Piemonte Orientale, Alessandria (Italy).
+%%
+%% This program is free software: you can redistribute it and/or modify
+%% it under the terms of the GNU Lesser General Public License as published
+%% by the Free Software Foundation, either version 3 of the License, or
+%% (at your option) any later version.
+%%
+%% This program is distributed in the hope that it will be useful,
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%% GNU Lesser General Public License for more details.
+%%
+%% You should have received a copy of the GNU Lesser General Public License
+%% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%%
+
+%%
+%% DcsGridBlender Admin Guide
+%%
+%% Author: Marco Guazzone, <marco.guazzone@gmail.com>
+%%
+
+\documentclass[italian,a4paper,12pt,titlepage,final]{article} 
+
+%%@{ document preamble
+
+%\usepackage{fancyhdr}
+%\usepackage[headings]{fullpage}
+\usepackage{algorithm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{babel}
+\usepackage{color}
+\definecolor{darkblue}{cmyk}{0.83,0.89,0.0,0.43}
+\usepackage[T1]{fontenc}
+\usepackage{framed}
+\usepackage{graphicx}
+%\usepackage[colorlinks,linkcolor=black,urlcolor=black,citecolor=black,hyperindex,plainpages=false]{hyperref} % Print Version
+\usepackage[colorlinks,linkcolor=darkblue,urlcolor=blue,citecolor=darkblue,hyperindex,plainpages=false]{hyperref} % Electronic Version
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{palatino}
+\usepackage[headings]{fullpage}
+\usepackage[latin1]{inputenc}
+\usepackage{palatino}
+\usepackage{setspace}
+\usepackage{verbatim}
+
+\makeatletter
+
+\ifx\pdfoutput\defined
+\hypersetup{
+	pdftitle={DCS Grid Blender Submitter -- Admin Guide},
+	pdfauthor={Marco Guazzone},
+	pdfsubject={Sistemi Distribuiti e Grid Computing},
+	pdfkeywords={Sistemi Distribuiti, Grid Computing, Scheduling, Rendering, Blender},
+	pdfstartview={FitH}
+}
+\fi
+
+\onehalfspacing % spacing to 1.5pt
+
+%\newcommand{\mgTheApp}[1]{\emph{DcsGridBlender{#1}}
+\newcommand{\mgTheApp}{\emph{DcsGridBlender}}
+\newcommand{\mgTheAppFile}[1]{\emph{DcsGridBlender{#1}}}
+
+\newcommand{\mgCode}[1]{\texttt{#1}}
+
+%%@{ Custom environments
+\newenvironment{mgComment}{\textcolor[gray]{0.8}\bgroup}{\egroup}%
+\newenvironment{mgLinkBox}{\begin{table}\begin{framed}}{\end{framed}\end{table}}%
+\newenvironment{mgCodeBox}
+{
+\begin{quote}
+\normalfont\ttfamily}%
+{\end{quote}}
+
+%%{\begin{framed}\begin{list}{}{
+%{\begin{list}{}{
+%%{\begin{framed}{
+%%\setlength{\rightmargin}{\leftmargin}
+%\setlength{\listparindent}{0pt}% needed for AMS classes
+%\raggedright
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+%\normalfont\ttfamily}%
+%%\item[]}
+%\item[]\begin{framed}\item[]}
+%%}
+%{\end{framed}\end{list}}%
+%%{\end{list}\end{framed}}%
+%%{\end{framed}}%
+\newenvironment{mgWarnBox}[1]{\begin{table}\begin{framed}\par\textbf{#1}\newline\newline}{\end{framed}\end{table}}%
+\newenvironment{mgToDo}{\begin{framed}\color{blue}}{\color{black}\end{framed}}%
+\newenvironment{mgFixMe}{\begin{framed}\color{red}}{\color{black}\end{framed}}%
+\newenvironment{mgDeprecated}{\begin{framed}\color{brown}}{\color{black}\end{framed}}%
+%%@} Custom environments
+
+\makeatother
+
+%%@} document preamble
+
+%%@{ document body
+
+\begin{document}
+
+%\bibliographystyle{plain}
+
+\title{\textbf{DCS Grid Blender v. 1.0}\\
+\ \\
+Manuale Amministratore}
+
+\author{
+\begin{tabular}{cc}
+Distributed System Computing Group & TOP-IX \tabularnewline
+Universit\`a del Piemonte Orientale & TOrino Piemonte Internet eXchange \tabularnewline
+(\href{http://dcs.di.unipmn.it}{http://dcs.di.unipmn.it}) & (\href{http://www.topix.it}{http://www.topix.it}) \tabularnewline
+\end{tabular}}
+
+\maketitle
+
+\thispagestyle{empty}
+\setcounter{page}{1}
+\pagenumbering{roman}
+\tableofcontents
+%\listoffigures
+\newpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\pagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{plain}
+
+\include{inc/Blender}
+
+\appendix
+
+\include{inc/BlenderFiles}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%@{ bibliography
+
+%\nocite{*}
+
+%\bibliography{AdminGuide}
+
+%%@} bibliography
+
+\end{document}
+
+%%@} document body

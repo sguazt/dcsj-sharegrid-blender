@@ -1,0 +1,18 @@
+------------------------------------
+HOW-TO "MAKE A MOVIE FROM IMAGES"
+------------------------------------
+
+You have just rendered a few thousands frames: to put them together, for producing the complete animation, you can use "FFMPEG" as follows.
+
+Let's suppose your frames are named 0001.jpg, 0002.jpg and so on. The command line for "FFMPEG", for merging these frames, is:
+
+  ffmpeg -b <bitrate> -i %04d.jpg <output.avi>
+
+where:
+* <bitrate> is the desired video bitrate (i.e., quality of the animation); the default value is 200k (i.e., 200 Kbit/s);
+* <%04d.jpg> is the format of the input files;
+* <output.avi> is the name for the resulting video file. 
+
+Note, the same command works for other kind of images too, like PNG, GIF, etc.
+
+For additional information see FFMPEG(1) manual page or go to the FFMPEG site (http://ffmpeg.mplayerhq.hu/).
